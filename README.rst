@@ -38,15 +38,27 @@ a mixnet key server could perhaps have these responsibilities:
 keyserver
 `````````
 
-Note that this design was inspired by Jonathan Moore's unfinished halite crypto library:
-https://bitbucket.org/0x0000/halite/
-
-It uses DJB's NaCl crypto library but here are the pynacl docs: https://pynacl.readthedocs.io/
-
 design goals:
  - do not leak identity keys over the network
  - authenticated key updates
- - symmetrically sized call and response to prevent traffic amplification attacks
+ - forward secrecy
+ - symmetrically sized call and response to prevent traffic
+   amplification attacks
+
+The following cryptographic scheme is used for a mix network where
+each mix has a signing key and a routing key. The routing key is a
+curve25519 key whereas the singing key is an ed25519 key. When the mix
+performs a key rotation both the signing key and the routing key are
+rotated.
+
+In this context forward secrecy means that if a mix routing key or
+signing key is compromised it means loss of confidentiality until the
+next key rotatation.
+
+Symmetrically sized call and response is easily achieved by encrypted
+padding, for example the MixIntroduction will be the same size as
+MixIntroductionAck which uses padding.
+
 
 notation for key types
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -56,9 +68,12 @@ S'  : keyserver ephemeral key
 C   : client identity key
 C'  : client ephemeral key
 N   : new client identity key
-R   : client mix routing key
-Q   : new client mix routing key
+R   : client mix routing key (curve25519 public key)
+Q   : new client mix routing key (curve25519 public key)
+
 Box : Box( private_key, public_key)[ data_to_encrypt ]
+
+* uses DJB's NaCl crypto library; here are the pynacl docs: https://pynacl.readthedocs.io/
 
 
 envelope types with fields
@@ -105,9 +120,19 @@ MixUpdateAck
  - S'
  - C'
  - Nonce
- - Box( S', N' )[ padding ]
+ - Box( S', N )[ padding ]
+
+
 
 
 valid state transitions
 ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+acknowledgements
+----------------
+
+This keyserver design was inspired by Jonathan Moore's unfinished halite crypto library:
+https://bitbucket.org/0x0000/halite/
 
