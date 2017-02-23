@@ -1,31 +1,27 @@
 
-mixnet pki
-==========
+============
+ mixnet pki
+============
 
-phase 1
-```````
+- phase 1: In order to produce a proof of concept mix network as soon
+  as possible a rather simple key server can be used where the
+  correctness of the cryptographic construction would be the primary
+  concern.
 
-In order to produce a proof of concept mix network as soon as possible
-a rather simple key server can be used where the correctness of the
-cryptographic construction would be the primary concern.
+- phase 2: Eliminate the SPOF (single point of failure); Tor Project's
+  directory authority design is somewhat decentralized in that it uses a
+  small set of directory authority servers to negotiate a network
+  consensus document. The ``dir-spec.txt`` file from the ``torspec`` git
+  repo discusses their design in detail:
 
-phase 2
-```````
+  https://git.torproject.org/torspec.git
 
-Eliminate the SPOF (single point of failure); Tor Project's directory
-authority design is somewhat decentralized in that it uses a small set
-of directory authority servers to negotiate a network consensus
-document. The ``dir-spec.txt`` file from the ``torspec`` git repo
-discusses their design in detail:
-
-https://git.torproject.org/torspec.git
-
-A simple mix network would require something considerably less complicated
-than Tor's dir auth scheme.
+  A simple mix network would require something considerably less
+  complicated than Tor's dir auth scheme.
 
 
 simple mixnet keyserver
------------------------
+=======================
 
 a mixnet key server could perhaps have these responsibilities:
 
@@ -36,7 +32,7 @@ a mixnet key server could perhaps have these responsibilities:
 
 
 keyserver
-`````````
+---------
 
 design goals:
  - do not leak identity keys over the network
@@ -61,23 +57,23 @@ MixIntroductionAck which uses padding.
 
 
 notation for key types
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
-S   : keyserver identity key
-S'  : keyserver ephemeral key
-C   : client identity key
-C'  : client ephemeral key
-N   : new client identity key
-R   : client mix routing key (curve25519 public key)
-Q   : new client mix routing key (curve25519 public key)
+- S   : keyserver identity key
+- S'  : keyserver ephemeral key
+- C   : client identity key
+- C'  : client ephemeral key
+- N   : new client identity key
+- R   : client mix routing key (curve25519 public key)
+- Q   : new client mix routing key (curve25519 public key)
 
-Box : Box( private_key, public_key)[ data_to_encrypt ]
+- Box : Box( private_key, public_key)[ data_to_encrypt ]
 
 * uses DJB's NaCl crypto library; here are the pynacl docs: https://pynacl.readthedocs.io/
 
 
 envelope types with fields
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 RequestKey
  - C'
@@ -96,8 +92,7 @@ MixIntroduction
  - Box( C', S' )[ 
      - C 
      - Box( C, S' )[ C' ]
-     - Box( C, S' )[ R ]
-   ]
+     - Box( C, S' )[ R ] ]
 
 MixIntroductionAck
  - S'
@@ -113,8 +108,7 @@ MixUpdate
      - C 
      - Box( C, S' )[ C' ]
      - Box( C, S' )[ N ]
-     - Box( N, S' )[ Q ]
-   ]
+     - Box( N, S' )[ Q ] ]
 
 MixUpdateAck
  - S'
@@ -126,7 +120,8 @@ MixUpdateAck
 
 
 valid state transitions
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
+
 
 
 
