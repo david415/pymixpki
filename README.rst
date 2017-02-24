@@ -213,7 +213,7 @@ valid state transitions for API calls
   - STATE_CONNECTED -> STATE_HALF_QUERIED: client sends a Query
   - STATE_HALF_QUERIED -> STATED_QUERED: client received QueryResponse
 
- - anonymous query:
+- anonymous query:
   - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
   - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
   - STATE_CONNECTED -> STATE_HALF_QUERIED: client sends an AnonymousQuery
