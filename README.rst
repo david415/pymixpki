@@ -41,6 +41,10 @@ design goals:
  - symmetrically sized call and response to prevent traffic
    amplification attacks
 
+TODO:
+  - investigate making the protocol call and responses take
+    equal amounts of work to produce in terms of memory and CPU usage
+
 The following cryptographic scheme is used for a mix network where
 each mix has a signing key and a routing key. The routing key is a
 curve25519 key whereas the singing key is an ed25519 key. When the mix
@@ -171,6 +175,10 @@ possible channel states
 - STATE_CONNECTED       : Local and remote ephermal keys are known
 - STATE_HALF_INTRODUCED : Introduction sent but no acknowledgement was received
 - STATE_INTRODUCED      : Introduction send and acknowledgement received
+- STATE_HALF_UPDATED    : A mix has sent it's key rotation update to the keyserver
+- STATE_UPDATED         : A mix has received an ACK after sending a key rotation update to the keyserver
+- STATE_HALF_QUERIED    : A mix has sent it's query to the keyserver
+- STATE_QUERIED         : A mix has received a QueryResponse after sending a query
 
 
 error codes
