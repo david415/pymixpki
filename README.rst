@@ -196,24 +196,28 @@ valid state transitions for API calls
 **client state transitions**
 
 - mix introduction:
+
   - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
   - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
   - STATE_CONNECTED -> HALF_INTRODUCED: client sends MixIntroduction
   - STATE_HALF_INTRODUCED -> STATE_INTRODUCED: client receives a valid MixIntroductionAck
 
 - mix update:
+
   - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
   - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
   - STATE_CONNECTED -> STATE_HALF_UPDATED: client sends MixUpdate
   - STATE_HALF_UPDATED -> STATE_UPDATED: client received a valid MixUpdateAck
 
 - mix query:
+
   - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
   - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
   - STATE_CONNECTED -> STATE_HALF_QUERIED: client sends a Query
   - STATE_HALF_QUERIED -> STATED_QUERED: client received QueryResponse
 
 - anonymous query:
+
   - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
   - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
   - STATE_CONNECTED -> STATE_HALF_QUERIED: client sends an AnonymousQuery
