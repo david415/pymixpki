@@ -99,10 +99,10 @@ MixIntroduction
  - Nonce
  - Box( C', S' )[ 
      - C 
-     - Box( C, S' )[ C' ]
-     - Box( C, S' )[ R ] ]
      - Box( C, S' )[
-       - scalar_mult(scalar_mult(generator, make_curve(S')), R_private) ]
+       - C'
+       - R
+       - scalar_mult(scalar_mult(generator, make_curve(S')), R_private) ] ]
 
 MixIntroductionAck
  - S'
@@ -116,10 +116,12 @@ MixUpdate
  - Nonce
  - Box( C', S' )[ 
      - C 
-     - Box( C, S' )[ C' ]
-     - Box( C, S' )[ N ]
-     - Box( N, S' )[ Q ] ]
-     - scalar_mult(scalar_mult(generator, make_curve(S')), Q_private) ]
+     - Box( C, S' )[
+       - C'
+       - scalar_mult(scalar_mult(generator, make_curve(Q)), R_private)
+       - N
+       - Box( N, S' )[
+         - scalar_mult(scalar_mult(generator, make_curve(S')), Q_private) ] ] ]
 
 MixUpdateAck
  - S'
