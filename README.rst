@@ -93,6 +93,33 @@ RequestKeyResponse
  - Nonce
  - Box( S, C` )[ S' ]
 
+Query
+ - C'
+ - S'
+ - Nonce
+ - Box( C', S' )[
+     - C
+     - Box( C, S' )[
+       - C'
+       - "query payload"
+       - padding ] ]
+
+QueryResponse
+ - S'
+ - C'
+ - Nonce
+ - Box( S', C' )[
+   - "query response payload"
+   - padding ]
+
+AnonymousQuery
+ - C'
+ - S'
+ - Nonce
+ - Box( C', S' )[
+   - "query payload"
+   - padding ]
+
 MixIntroduction
  - C'
  - S'
@@ -129,12 +156,60 @@ MixUpdateAck
  - Nonce
  - Box( S', N )[ padding ]
 
+UnknownSession
+ - R'
+ - Nonce
+ - Box( R', S )[ padding ]
 
 
-
-valid state transitions
+possible channel states
 -----------------------
 
+- STATE_CLOSED          : No matchin channel exists
+- STATE_DISCONNECTED    : Channel exists but no session exists
+- STATE_HALF_SESSION    : Local ephermal key exists but no remote ephermal key is known
+- STATE_CONNECTED       : Local and remote ephermal keys are known
+- STATE_HALF_INTRODUCED : Introduction sent but no acknowledgement was received
+- STATE_INTRODUCED      : Introduction send and acknowledgement received
+
+
+error codes
+-----------
+
+- SUCCESS                 : opperation was successfull
+- ERROR_UNKNOWN_CHANNEL   : the referenced channel id is unknown
+- ERROR_DISCONNECTED      : the referenced session id is unknown
+- ERROR_NOT_DISCONNECTED  : the opperation is only valid on disconnected channels
+
+
+valid state transitions for API calls
+-------------------------------------
+
+**client state transitions**
+
+- mix introduction:
+  - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
+  - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
+  - STATE_CONNECTED -> HALF_INTRODUCED: client sends MixIntroduction
+  - STATE_HALF_INTRODUCED -> STATE_INTRODUCED: client receives a valid MixIntroductionAck
+
+- mix update:
+  - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
+  - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
+  - STATE_CONNECTED -> STATE_HALF_UPDATED: client sends MixUpdate
+  - STATE_HALF_UPDATED -> STATE_UPDATED: client received a valid MixUpdateAck
+
+- mix query:
+  - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
+  - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
+  - STATE_CONNECTED -> STATE_HALF_QUERIED: client sends a Query
+  - STATE_HALF_QUERIED -> STATED_QUERED: client received QueryResponse
+
+ - anonymous query:
+  - STATE_CLOSED -> STATE_HALF_SESSION: client sends RequestKey
+  - STATE_HALF_SESSION -> STATE_CONNECTED: client receives a valid RequestKeyResponse
+  - STATE_CONNECTED -> STATE_HALF_QUERIED: client sends an AnonymousQuery
+  - STATE_HALF_QUERIED -> STATED_QUERED: client received QueryResponse
 
 
 
