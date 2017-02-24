@@ -64,10 +64,18 @@ notation for key types
 - C   : client identity key
 - C'  : client ephemeral key
 - N   : new client identity key
-- R   : client mix routing key (curve25519 public key)
-- Q   : new client mix routing key (curve25519 public key)
+- R   : client mix curve25519 routing key
+- Q   : new client mix curve25519 routing key
+- R_private : private curve25519 routing key
+- Q_private: new private curve25519 routing key
+- G   : curve25519 generator value
+
+
+notation for cryptographic operations
+-------------------------------------
 
 - Box : Box( private_key, public_key)[ data_to_encrypt ]
+- scalar_mult : scalar_mult(base, exponent)
 
 * uses DJB's NaCl crypto library; here are the pynacl docs: https://pynacl.readthedocs.io/
 
@@ -93,6 +101,8 @@ MixIntroduction
      - C 
      - Box( C, S' )[ C' ]
      - Box( C, S' )[ R ] ]
+     - Box( C, S' )[
+       - scalar_mult(scalar_mult(generator, make_curve(S')), R_private) ]
 
 MixIntroductionAck
  - S'
@@ -109,6 +119,7 @@ MixUpdate
      - Box( C, S' )[ C' ]
      - Box( C, S' )[ N ]
      - Box( N, S' )[ Q ] ]
+     - scalar_mult(scalar_mult(generator, make_curve(S')), Q_private) ]
 
 MixUpdateAck
  - S'
